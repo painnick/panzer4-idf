@@ -3,7 +3,7 @@
 이 파일은 AI 에이전트가 본 프로젝트의 구조, 스타일 가이드 및 기술적 의사결정 사항을 이해하기 위한 가이드라인입니다.
 
 ## 🛠 기술 스택
-- **Framework:** ESP-IDF v5.4.3
+- **Framework:** ESP-IDF v5.5.2
 - **Language:** C (C99/C11 표준 지향)
 - **Build System:** CMake / idf.py. 루트의 env.bat를 먼저 실행하여 IDF 환경 설정을 반영해야 함 
 - **Target Chip:** ESP32-기본
@@ -34,10 +34,12 @@
 ## ⚙️ 하드웨어 제어 규칙
 - **DC 모터 구동:** 트랙 및 터렛 제어는 `MCPWM`을 사용함. 터렛 회전 속도 조절은 `my_flatform.c`의 `TURRET_SPEED` 매크로로 제어 (현재 최대 속도인 511로 설정됨).
 - **서보 모터:** **`LEDC`**를 사용하여 제어할 것. 포신 반동(GPIO 32) 및 포 마운트(SG90, GPIO 13) 모두 LEDC 채널 0/1을 사용.
+- **입력 처리 아키텍처:** 게임패드 입력은 `my_platform_on_controller_data`(Core 0, BT 태스크)에서 큐(`input_queue`)로 전달하고, `input_process_task`(Core 1)에서 모터/서보/버튼 처리를 수행함. Core 0의 BT 컨트롤러 부하를 경감하기 위함. 모터 함수(`rctank_motor_*_set`)는 뮤텍스 없이 volatile 변수에 직접 쓰며, `_immediate` 함수는 non-blocking(timeout 0)으로 동작함.
+- **동기화:** `recoil_end_time`은 `portMUX_TYPE` 스프록으로 보호하여 Core 1과 타이머 콜백 간 안전하게 공유함.
 
 ## ⚠️ 주의 사항
 - `sdkconfig`를 직접 수정하지 말고, 설정 변경이 필요하면 `menuconfig` 항목을 언급해줄 것.
-- IDF 5.4.3 버전의 API를 사용할 것. 다른 버전은 고려하지 않고 있음
+- IDF 5.5.2 버전의 API를 사용할 것. 다른 버전은 고려하지 않고 있음
 - **하드웨어 핀(Pin) 맵 및 상세 기능 정의는 프로젝트 루트의 `README.md` 파일을 최우선으로 참조할 것.**
 - **리코일 사양:** 서보 각도는 0(Rest) ~ 60(Pull) 범위를 사용하며, 트랙 후진 반동 시간은 200ms를 유지함.
 - **사운드 피드백 제약:** 사운드 모듈의 RX 핀이 연결되지 않은 상태이므로, `rctank_dfplayer`의 자동 복구 기능 대신 `main` 로직의 타이머나 모듈 자체 루프 명령을 사용하여 상태를 동기화함.

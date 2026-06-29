@@ -1,6 +1,6 @@
 # RC 탱크 프로젝트(Panzer IV)
 
-Bluepad32를 이용한 게임패드 조작 RC 탱크입니다. ESP32-IDF(v5.4.3) 기반으로 개발되었습니다.
+Bluepad32를 이용한 게임패드 조작 RC 탱크입니다. ESP32-IDF(v5.5.2) 기반으로 개발되었습니다.
 
 PCB는 KingTiger용을 사용합니다.
 
@@ -83,6 +83,7 @@ PCB는 KingTiger용을 사용합니다.
 
 ### 플랫폼 로직 (`main/my_flatform.c`)
 - Bluepad32 이벤트 핸들링 및 게임패드 입력 맵핑
+- **Core 1 오프로딩**: 게임패드 입력을 큐로 전달하여 Core 1에서 모터/서보/버튼 처리 (BT 컨트롤러 부하 경감)
 - 발사 시퀀스 지연 보정 (Sound 재생 시점과 하드웨어 동작 동기화)
 - 대회전 감속: 좌우 트랙 속도 차이가 클 때 전체 속도 비례 감소 (`TURN_SLOWDOWN_FACTOR`)
 
@@ -107,7 +108,7 @@ PCB는 KingTiger용을 사용합니다.
 
 ## 개발 환경 설정
 
-1. **ESP-IDF v5.4.3** 설치
+1. **ESP-IDF v5.5.2** 설치
 2. 프로젝트 루트의 `env.bat`를 실행하여 환경 변수 설정 (Windows)
 3. `idf.py build` 명령으로 컴파일
 4. `idf.py flash monitor` 명령으로 업로드 및 로그 확인
