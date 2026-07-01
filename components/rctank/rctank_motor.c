@@ -334,7 +334,7 @@ static int32_t map_joystick_to_motor_speed(int32_t speed)
 void rctank_motor_left_track_set(int32_t speed)
 {
     int32_t mapped_speed = map_joystick_to_motor_speed(speed);
-    if (motor_mutex && xSemaphoreTake(motor_mutex, pdMS_TO_TICKS(5)) == pdTRUE) {
+    if (motor_mutex && xSemaphoreTake(motor_mutex, portMAX_DELAY) == pdTRUE) {
         target_left_speed = mapped_speed;
         xSemaphoreGive(motor_mutex);
     }
@@ -342,7 +342,7 @@ void rctank_motor_left_track_set(int32_t speed)
 
 void rctank_motor_left_track_set_immediate(int32_t speed)
 {
-    if (motor_mutex && xSemaphoreTake(motor_mutex, pdMS_TO_TICKS(5)) == pdTRUE) {
+    if (motor_mutex && xSemaphoreTake(motor_mutex, portMAX_DELAY) == pdTRUE) {
         target_left_speed = speed;
         current_left_speed = speed * 10;
         if (left_cmpr_a && left_cmpr_b) {
@@ -355,7 +355,7 @@ void rctank_motor_left_track_set_immediate(int32_t speed)
 void rctank_motor_right_track_set(int32_t speed)
 {
     int32_t mapped_speed = map_joystick_to_motor_speed(speed);
-    if (motor_mutex && xSemaphoreTake(motor_mutex, pdMS_TO_TICKS(5)) == pdTRUE) {
+    if (motor_mutex && xSemaphoreTake(motor_mutex, portMAX_DELAY) == pdTRUE) {
         target_right_speed = mapped_speed;
         xSemaphoreGive(motor_mutex);
     }
@@ -363,7 +363,7 @@ void rctank_motor_right_track_set(int32_t speed)
 
 void rctank_motor_right_track_set_immediate(int32_t speed)
 {
-    if (motor_mutex && xSemaphoreTake(motor_mutex, pdMS_TO_TICKS(5)) == pdTRUE) {
+    if (motor_mutex && xSemaphoreTake(motor_mutex, portMAX_DELAY) == pdTRUE) {
         target_right_speed = speed;
         current_right_speed = speed * 10;
         if (right_cmpr_a && right_cmpr_b) {
